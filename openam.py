@@ -16,10 +16,10 @@ __author_email__ = 'juanjbrown@gmail.com'
 __author__ = '{0} <{1}>'.format(__author_name__, __author_email__)
 __version__ = '1.1.0'
 
-import urllib
-import urllib2
+import urllib.parse
+import urllib.request
+import urllib.error
 import json
-import urlparse
 
 # REST API URIs
 REST_OPENAM_LOGIN = '/identity/json/authenticate'
@@ -251,7 +251,7 @@ def _get_full_url(base_url, path):
     # removing '/' from begining if there is one
     processed_path = path if path[0] != "/" else path[1:]
 
-    return urlparse.urljoin(processed_base_url, processed_path)
+    return urllib.parse.urljoin(processed_base_url, processed_path)
 
 
 def _set_query_parameter(url, queries):
@@ -259,13 +259,13 @@ def _set_query_parameter(url, queries):
     Returns a the received URL and updates the query with the received dictionary
     """
 
-    scheme, netloc, path, params, query, fragment = urlparse.urlparse(url)
-    parsed_query = urlparse.parse_qs(query)
+    scheme, netloc, path, params, query, fragment = urllib.parse.urlparse(url)
+    parsed_query = urllib.parse.parse_qs(query)
 
     parsed_query.update(queries)
-    new_query = urllib.urlencode(parsed_query, doseq=True)
+    new_query = urllib.parse.urlencode(parsed_query, doseq=True)
 
-    return urlparse.urlunparse((scheme, netloc, path, params, new_query, fragment))
+    return urllib.parse.urlunparse((scheme, netloc, path, params, new_query, fragment))
 
 
 def _get_dict_from_json(json_data):
@@ -294,10 +294,10 @@ def http_get(url, data, timeout):
     Send a simple HTTP GET and attempt to return the response data.
     """
 
-    params = urllib.urlencode(data)
+    params = urllib.parse.urlencode(data)
     try:
-        resp = urllib2.urlopen(url, data=params, timeout=timeout)
-    except urllib2.HTTPError:
+        resp = urllib.request.urlopen(url, data=params, timeout=timeout)
+    except urllib.error.HTTPError:
         return ''
 
     if resp.code != 200:

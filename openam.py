@@ -89,8 +89,7 @@ class OpenAM(object):
         if params is None:
             params = {}
         # data = GET(
-        data = http_get(_get_full_url(self.openam_url, urlpath), params, self.__timeout
-        )
+        data = http_get(_get_full_url(self.openam_url, urlpath), params, self.__timeout)
 
         return data
 
@@ -296,7 +295,7 @@ def http_get(url, data, timeout):
 
     params = urllib.parse.urlencode(data)
     try:
-        resp = urllib.request.urlopen(url, data=params, timeout=timeout)
+        resp = urllib.request.urlopen(url, data=params.encode('utf-8'), timeout=timeout)
     except urllib.error.HTTPError:
         return ''
 
